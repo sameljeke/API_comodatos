@@ -1,7 +1,9 @@
+# app/middleware/logging.py
 import logging
 from logging.handlers import RotatingFileHandler
 import os
 from datetime import datetime
+from flask import request  # <-- ¡ESTA ES LA LÍNEA QUE FALTA!
 
 def setup_logging(app):
     """Configura el sistema de logging"""
@@ -70,8 +72,16 @@ def setup_logging(app):
         @app.after_request
         def after_request_logging(response):
             if request.endpoint and 'static' not in request.endpoint:
+                # Obtener usuario actual si está autenticado
+                user_id = 'anonymous'
+                try:
+                    from flask_jwt_extended import get_jwt_identity
+                    user_id = get_jwt_identity() or 'anonymous'
+                except:
+                    pass
+                
                 audit_logger.info(
-                    f'User: {getattr(request, "user_id", "anonymous")} - '
+                    f'User: {user_id} - '
                     f'Method: {request.method} - '
                     f'Path: {request.path} - '
                     f'Status: {response.status_code}'
