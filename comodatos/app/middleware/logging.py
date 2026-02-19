@@ -3,7 +3,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 from datetime import datetime
-from flask import request  # <-- ¡ESTA ES LA LÍNEA QUE FALTA!
+from flask import request
 
 def setup_logging(app):
     """Configura el sistema de logging"""
